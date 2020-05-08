@@ -101,7 +101,7 @@ app.get('/number-of-users', function(req, res) {
 //////////////////////////////////////////////////////////////////////////
 
 function validateId(id) {
-  return typeof id === 'string' && id.length === 16;
+  return typeof id === 'string';
 }
 
 function validateLastKnownTime(lastKnownTime) {
