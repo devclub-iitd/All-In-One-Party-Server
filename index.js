@@ -101,6 +101,11 @@ app.get('/session-details',function (req,res) {
   res.send(JSON.stringify(sessions))
 });
 
+app.get('/reset',function (req,res) {
+  sessions={};
+  users={};
+  res.status(200).send()
+})
 
 //////////////////////////////////////////////////////////////////////////
 // Websockets API                                                       //
