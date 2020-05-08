@@ -96,12 +96,18 @@ app.get('/number-of-users', function(req, res) {
   res.send(String(Object.keys(users).length));
 });
 
+app.get('/session-details',function (req,res) {
+  res.setHeader('Content-Type','application/json')
+  res.send(JSON.stringify(sessions))
+});
+
+
 //////////////////////////////////////////////////////////////////////////
 // Websockets API                                                       //
 //////////////////////////////////////////////////////////////////////////
 
 function validateId(id) {
-  return typeof id === 'string';
+  return typeof id === 'string' && id.length === 16;
 }
 
 function validateLastKnownTime(lastKnownTime) {
