@@ -48,9 +48,11 @@ app.use(function(req, res, next) {
 //   ownerId: '3d16d961f67e9792',                                                           // id of the session owner (if any)
 //   state: 'playing' | 'paused',                                                           // whether the video is playing or paused
 //   userIds: ['3d16d961f67e9792', ...],                                                    // ids of the users in the session
-//   videoId: 'abc123'                                                                           // Netflix id the video
+//   videoId: 'abc123',                                                                         // Netflix id the video
+//   host: 'www.{youtube|netflix|hotstar}.com'                                              // location.host
 // }
 var sessions = {};
+const SupportedHosts = ['www.youtube.com','www.netflix.com','www.hotstar.com'];
 
 // in-memory store of all the users
 // the keys are the user IDs (strings)
@@ -164,6 +166,10 @@ function validateVideoId(videoId) {
 
 function validateMessageBody(body) {
   return typeof body === 'string' && body.replace(/^\s+|\s+$/g, '') !== '';
+}
+
+function validateHost(host){
+  return typeof host === 'string' && SupportedHosts.includes(host)
 }
 
 function padIntegerWithZeros(x, minWidth) {
@@ -305,6 +311,12 @@ io.on('connection', function(socket) {
       return;
     }
 
+    if (!validateHost(data.host)) {
+      fn({ errorMessage: 'Invalid host' });
+      console.log('User ' + userId + ' attempted to reboot session with invalid host ' + JSON.stringify(data.videoId) + '.');
+      return;
+    }
+
     if (users[userId].sessionId !== null) {
       leaveSession(false);
     }
@@ -332,11 +344,12 @@ io.on('connection', function(socket) {
         ownerId: data.ownerId,
         state: data.state,
         videoId: data.videoId,
+        host: data.host,
         userIds: [userId]
       };
       sessions[session.id] = session;
       users[userId].sessionId = data.sessionId;
-      console.log('User ' + userId + ' rebooted session ' + users[userId].sessionId + ' with video ' + JSON.stringify(data.videoId) + ', time ' + JSON.stringify(data.lastKnownTime) + ', and state ' + data.state + ' for epoch ' + JSON.stringify(data.lastKnownTimeUpdatedAt) + '.');
+      console.log('User ' + userId + ' rebooted session ' + users[userId].sessionId + ' with video ' + JSON.stringify(data.videoId) + '@host' + JSON.stringify(data.host) + ', time ' + JSON.stringify(data.lastKnownTime) + ', and state ' + data.state + ' for epoch ' + JSON.stringify(data.lastKnownTimeUpdatedAt) + '.');
     }
 
     broadcastPresence(data.sessionId, null);
@@ -367,6 +380,12 @@ io.on('connection', function(socket) {
       return;
     }
 
+    if (!validateHost(data.host)) {
+      fn({ errorMessage: 'Invalid host' });
+      console.log('User ' + userId + ' attempted to create session with invalid host ' + JSON.stringify(data.videoId) + '.');
+      return;
+    }
+
     var sessionId = makeId();
     while (sessions.hasOwnProperty(sessionId)) {
       sessionId = makeId();
@@ -380,7 +399,8 @@ io.on('connection', function(socket) {
       ownerId: data.controlLock ? userId : null,
       state: 'paused',
       userIds: [userId],
-      videoId: data.videoId
+      videoId: data.videoId,
+      host: data.host
     };
     users[userId].sessionId = sessionId;
     sessions[session.id] = session;
@@ -402,7 +422,7 @@ io.on('connection', function(socket) {
     } else {
       sendMessage('created the session', true);
     }
-    console.log('User ' + userId + ' created session ' + users[userId].sessionId + ' with video ' + JSON.stringify(data.videoId) + ' and controlLock ' + JSON.stringify(data.controlLock) + '.');
+    console.log('User ' + userId + ' created session ' + users[userId].sessionId + ' with video ' + JSON.stringify(data.videoId) + '@host' + JSON.stringify(data.host) + ' and controlLock ' + JSON.stringify(data.controlLock) + '.');
   });
 
   socket.on('joinSession', function(sessionId, fn) {
@@ -494,6 +514,7 @@ io.on('connection', function(socket) {
       console.log('User ' + userId + ' attempted to update session ' + users[userId].sessionId + ' with invalid state ' + JSON.stringify(data.state) + '.');
       return;
     }
+
 
     if (sessions[users[userId].sessionId].ownerId !== null && sessions[users[userId].sessionId].ownerId !== userId) {
       fn({ errorMessage: 'Session locked.' });
