@@ -1,16 +1,11 @@
 {
-  "name": "netflixparty",
+  "name": "streamparty",
   "version": "1.0.0",
-  "description": "A tool for synchronized Netflix consumption.",
+  "description": "A tool for synchronized video streaming",
   "main": "index.js",
   "scripts": {
     "start": "./node_modules/.bin/forever index.js"
   },
-  "keywords": [
-    "netflix"
-  ],
-  "author": "Stephan Boyer",
-  "license": "MIT",
   "dependencies": {
     "express": "^4.13.3",
     "forever": "^0.15.1",
@@ -20,6 +15,6 @@
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/boyers/netflixparty.git"
+    "url": "https://github.com/Harsh14901/netflixparty-server.git"
   }
 }
