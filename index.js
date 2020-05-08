@@ -3,7 +3,7 @@
 //////////////////////////////////////////////////////////////////////////
 
 // express
-var express = require('express');
+import express from 'express';
 var app = express();
 
 // socket.io
@@ -11,10 +11,10 @@ var http = require('http').Server(app);
 var io = require('socket.io')(http);
 
 // lodash
-var lodash = require('lodash');
+import { forEach, pull, map } from 'lodash';
 
 // request logging
-var morgan = require('morgan');
+import morgan from 'morgan';
 app.use(morgan('short'));
 
 // turn off unnecessary header
@@ -48,7 +48,7 @@ app.use(function(req, res, next) {
 //   ownerId: '3d16d961f67e9792',                                                           // id of the session owner (if any)
 //   state: 'playing' | 'paused',                                                           // whether the video is playing or paused
 //   userIds: ['3d16d961f67e9792', ...],                                                    // ids of the users in the session
-//   videoId: 123                                                                           // Netflix id the video
+//   videoId: 'abc123'                                                                           // Netflix id the video
 // }
 var sessions = {};
 
@@ -159,7 +159,7 @@ function validateState(state) {
 }
 
 function validateVideoId(videoId) {
-  return typeof videoId === 'number' && videoId % 1 === 0 && videoId >= 0;
+  return typeof videoId === 'string';
 }
 
 function validateMessageBody(body) {
@@ -199,7 +199,7 @@ io.on('connection', function(socket) {
       }
     }
 
-    lodash.forEach(sessions[sessionId].userIds, function(id) {
+    forEach(sessions[sessionId].userIds, function(id) {
       if (id !== notToThisUserId) {
         console.log('Sending presence to user ' + id + '.');
         users[id].socket.emit('setPresence', {
@@ -221,7 +221,7 @@ io.on('connection', function(socket) {
     };
     sessions[users[userId].sessionId].messages.push(message);
 
-    lodash.forEach(sessions[users[userId].sessionId].userIds, function(id) {
+    forEach(sessions[users[userId].sessionId].userIds, function(id) {
       console.log('Sending message to user ' + id + '.');
       users[id].socket.emit('sendMessage', {
         body: message.body,
@@ -237,7 +237,7 @@ io.on('connection', function(socket) {
     sendMessage('left', true);
 
     var sessionId = users[userId].sessionId;
-    lodash.pull(sessions[sessionId].userIds, userId);
+    pull(sessions[sessionId].userIds, userId);
     users[userId].sessionId = null;
 
     if (sessions[sessionId].userIds.length === 0) {
@@ -323,7 +323,7 @@ io.on('connection', function(socket) {
         id: data.sessionId,
         lastKnownTime: data.lastKnownTime,
         lastKnownTimeUpdatedAt: new Date(data.lastKnownTimeUpdatedAt),
-        messages: lodash.map(data.messages, function(message) { return {
+        messages: map(data.messages, function(message) { return {
           userId: message.userId,
           body: message.body,
           isSystemMessage: message.isSystemMessage,
@@ -388,7 +388,7 @@ io.on('connection', function(socket) {
     fn({
       lastKnownTime: sessions[users[userId].sessionId].lastKnownTime,
       lastKnownTimeUpdatedAt: sessions[users[userId].sessionId].lastKnownTimeUpdatedAt.getTime(),
-      messages: lodash.map(sessions[users[userId].sessionId].messages, function(message) { return {
+      messages: map(sessions[users[userId].sessionId].messages, function(message) { return {
         body: message.body,
         isSystemMessage: message.isSystemMessage,
         timestamp: message.timestamp.getTime(),
@@ -432,7 +432,7 @@ io.on('connection', function(socket) {
       videoId: sessions[sessionId].videoId,
       lastKnownTime: sessions[sessionId].lastKnownTime,
       lastKnownTimeUpdatedAt: sessions[sessionId].lastKnownTimeUpdatedAt.getTime(),
-      messages: lodash.map(sessions[sessionId].messages, function(message) { return {
+      messages: map(sessions[sessionId].messages, function(message) { return {
         body: message.body,
         isSystemMessage: message.isSystemMessage,
         timestamp: message.timestamp.getTime(),
@@ -551,7 +551,7 @@ io.on('connection', function(socket) {
     fn();
     console.log('User ' + userId + ' updated session ' + users[userId].sessionId + ' with time ' + JSON.stringify(data.lastKnownTime) + ' and state ' + data.state + ' for epoch ' + JSON.stringify(data.lastKnownTimeUpdatedAt) + '.');
 
-    lodash.forEach(sessions[users[userId].sessionId].userIds, function(id) {
+    forEach(sessions[users[userId].sessionId].userIds, function(id) {
       if (id !== userId) {
         console.log('Sending update to user ' + id + '.');
         users[id].socket.emit('update', {
