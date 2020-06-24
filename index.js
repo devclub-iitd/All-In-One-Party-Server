@@ -80,6 +80,7 @@ function makeId() {
 
 // health check
 app.get('/', function(req, res) {
+  console.log(req.query);
   res.setHeader('Content-Type', 'text/plain');
   res.send('OK');
 });
