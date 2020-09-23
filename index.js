@@ -52,7 +52,7 @@ app.use(function(req, res, next) {
 //   host: 'www.{youtube|netflix|hotstar}.com'                                              // location.host
 // }
 var sessions = {};
-const SupportedHosts = ['www.youtube.com','www.netflix.com','www.hotstar.com'];
+// const SupportedHosts = ['www.youtube.com','www.netflix.com','www.hotstar.com'];
 
 // in-memory store of all the users
 // the keys are the user IDs (strings)
@@ -181,7 +181,7 @@ function validateMessageBody(body) {
 }
 
 function validateHost(host){
-  return typeof host === 'string' && SupportedHosts.includes(host)
+  return typeof host === 'string'
 }
 
 function padIntegerWithZeros(x, minWidth) {
