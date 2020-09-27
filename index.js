@@ -52,7 +52,7 @@ app.use(function(req, res, next) {
 //   host: 'www.{youtube|netflix|hotstar}.com'                                              // location.host
 // }
 var sessions = {};
-const SupportedHosts = ['www.youtube.com','www.netflix.com','www.hotstar.com'];
+// const SupportedHosts = ['www.youtube.com','www.netflix.com','www.hotstar.com'];
 
 // in-memory store of all the users
 // the keys are the user IDs (strings)
@@ -80,6 +80,7 @@ function makeId() {
 
 // health check
 app.get('/', function(req, res) {
+  console.log(req.query);
   res.setHeader('Content-Type', 'text/plain');
   res.send('OK');
 });
@@ -95,6 +96,17 @@ app.get('/number-of-users', function(req, res) {
   res.setHeader('Content-Type', 'text/plain');
   res.send(String(Object.keys(users).length));
 });
+
+app.get('/session-details',function (req,res) {
+  res.setHeader('Content-Type','application/json')
+  res.send(JSON.stringify(sessions))
+});
+
+app.get('/reset',function (req,res) {
+  sessions={};
+  users={};
+  res.status(200).send()
+})
 
 //////////////////////////////////////////////////////////////////////////
 // Websockets API                                                       //
@@ -169,7 +181,7 @@ function validateMessageBody(body) {
 }
 
 function validateHost(host){
-  return typeof host === 'string' && SupportedHosts.includes(host)
+  return typeof host === 'string'
 }
 
 function padIntegerWithZeros(x, minWidth) {

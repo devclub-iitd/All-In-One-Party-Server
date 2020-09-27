@@ -1,5 +1,5 @@
 {
-  "name": "streamparty",
+  "name": "video-stream-party",
   "version": "1.0.0",
   "description": "A tool for synchronized video streaming",
   "main": "index.js",
