@@ -1,8 +1,13 @@
-# Netflix Party
+# All-in-one party
 
-Netflix Party is a Chrome extension for watching Netflix remotely with friends, e.g., for movie nights with that long-distance special someone. It synchronizes video playback and adds group chat.
+All-in-one Party is a Chrome extension for watching video on any streaming site remotely with friends, e.g., for movie nights with that long-distance special someone. It synchronizes video playback and adds group chat.
 
-This is the server. The source for the Chrome extension can be found [here](https://github.com/boyers/netflixparty-chrome), and the source for the [website](https://www.netflixparty.com) can be found [here](https://github.com/boyers/netflixparty-website). The Chrome extension is published [here](https://chrome.google.com/webstore/detail/netflix-party/oocalimimngaihdkbihfgmpkcpnmlaoa) in the Chrome Web Store.
+This is the server for the extension. The extension can be found [here](https://github.com/saptarshi1234/All-in-one-Party). This extension can be used to watch any streaming site not only Netflix. You no longer need to have separate extensions for **Netflix, Amazon Prime, Hotstar, Disney** etc. This is a **one stop** solution for all your remote partying needs. This will not only work on paid streaming sites but will also work on the free ones like **YouTube, Vimeo, and any other site that offers video streaming capabilities** (even HTML5 video player on chrome :P).
+
+ 
+## Developers
+
+This Chrome extension is a redistribution of the original chrome extension for netflix i.e. [Netflix Party](https://www.netflixparty.com/) and has been developed by [DevClub](https://github.com/devclub-iitd)
 
 ## License
 
