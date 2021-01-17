@@ -49,10 +49,9 @@ app.use(function(req, res, next) {
 //   state: 'playing' | 'paused',                                                           // whether the video is playing or paused
 //   userIds: ['3d16d961f67e9792', ...],                                                    // ids of the users in the session
 //   videoId: 'abc123',                                                                         // Netflix id the video
-//   host: 'www.{youtube|netflix|hotstar}.com'                                              // location.host
+//   host:  <host domain here>                                      // location.host
 // }
 var sessions = {};
-// const SupportedHosts = ['www.youtube.com','www.netflix.com','www.hotstar.com'];
 
 // in-memory store of all the users
 // the keys are the user IDs (strings)
@@ -79,8 +78,7 @@ function makeId() {
 //////////////////////////////////////////////////////////////////////////
 
 // health check
-app.get('/', function(req, res) {
-  console.log(req.query);
+app.get('/healthz', function(req, res) {
   res.setHeader('Content-Type', 'text/plain');
   res.send('OK');
 });
@@ -102,11 +100,11 @@ app.get('/session-details',function (req,res) {
   res.send(JSON.stringify(sessions))
 });
 
-app.get('/reset',function (req,res) {
+app.post('/reset',function (req,res) {
   sessions={};
   users={};
   res.status(200).send()
-})
+});
 
 //////////////////////////////////////////////////////////////////////////
 // Websockets API                                                       //
