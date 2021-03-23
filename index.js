@@ -683,6 +683,8 @@ require('dotenv').config({
   path: `${__dirname}/.env`,
 });
 
-var server = http.listen(process.env.PORT || 3000, function() {
-  console.log('Listening on port %d.', server.address().port);
+const port = process.env.PORT;
+
+app.listen(port, () => {
+    console.log(`Server listening on ${port}!`);
 });
