@@ -679,6 +679,10 @@ io.on('connection', function(socket) {
   });
 });
 
+require('dotenv').config({
+  path: `${__dirname}/.env`,
+});
+
 var server = http.listen(process.env.PORT || 3000, function() {
   console.log('Listening on port %d.', server.address().port);
 });
