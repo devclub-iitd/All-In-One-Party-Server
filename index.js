@@ -6,9 +6,17 @@
 var express = require('express');
 var app = express();
 
+require('dotenv').config({
+  path: `${__dirname}/.env`,
+});
+
+const port = process.env.PORT;
+
+var server = app.listen(port, () => {
+    console.log(`Server listening on ${port}!`);
+});
 // socket.io
-var http = require('http').Server(app);
-var io = require('socket.io')(http);
+var io = require('socket.io').listen(server);
 
 // lodash
 var lodash = require('lodash');
@@ -28,7 +36,7 @@ app.enable('trust proxy');
 
 // add CORS headers
 app.use(function(req, res, next) {
-  res.setHeader('Access-Control-Allow-Origin', '*');
+  res.setHeader('Access-Control-Allow-Origin', req.headers.origin || '*');
   res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS, PUT, PATCH, DELETE');
   res.setHeader('Access-Control-Allow-Credentials', true);
   next();
@@ -679,12 +687,4 @@ io.on('connection', function(socket) {
   });
 });
 
-require('dotenv').config({
-  path: `${__dirname}/.env`,
-});
 
-const port = process.env.PORT;
-
-app.listen(port, () => {
-    console.log(`Server listening on ${port}!`);
-});
